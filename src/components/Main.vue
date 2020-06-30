@@ -3,7 +3,7 @@
 
         <div class="row justify-content-center">
             <div class="col-lg-10 col-12">
-                <nav class="creative-navbar row">
+                <nav class="creative-navbar row" ref="navbar">
                     <div class="links">
                         <router-link exact to="/">
                             <font-awesome-icon :icon="['fas', 'home']"/>
@@ -20,16 +20,13 @@
                         <a v-else href="#" @click.prevent="$bvModal.show('modal-scoped')">
                             <font-awesome-icon :icon="['fas', 'user']"/>
                         </a>
-                        <a href="#">
+                        <a href="#" class="d-md-none" @click.prevent="$refs.navbar.classList.add('search')">
                             <font-awesome-icon :icon="['fas', 'search']"/>
                         </a>
                     </div>
                     <form role="search">
                         <input type="text" placeholder="search"/>
-                        <a href="#">
-                            <font-awesome-icon :icon="['fas', 'search']"/>
-                        </a>
-                        <a href="#">
+                        <a href="#" class="d-md-none" @click.prevent="$refs.navbar.classList.remove('search')">
                             <font-awesome-icon :icon="['fas', 'times']"/>
                         </a>
                     </form>
