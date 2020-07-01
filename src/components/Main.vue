@@ -20,12 +20,12 @@
                         <a v-else href="#" @click.prevent="$bvModal.show('modal-scoped')">
                             <font-awesome-icon :icon="['fas', 'user']"/>
                         </a>
-                        <a href="#" class="d-md-none" @click.prevent="$refs.navbar.classList.add('search')">
+                        <a href="#" class="d-md-none" @click.prevent="() => {$refs.navbar.classList.add('search'); $refs.searchBox.focus()}">
                             <font-awesome-icon :icon="['fas', 'search']"/>
                         </a>
                     </div>
-                    <form role="search">
-                        <input type="text" placeholder="search"/>
+                    <form role="search" @submit.prevent="() => {$router.push(`/?s=${s}`); $refs.searchBox.blur();}">
+                        <input ref="searchBox" type="text" placeholder="search" v-model="s" @input="updateS"/>
                         <a href="#" class="d-md-none" @click.prevent="$refs.navbar.classList.remove('search')">
                             <font-awesome-icon :icon="['fas', 'times']"/>
                         </a>
@@ -40,14 +40,25 @@
 <script>
 
     import {mapGetters} from "vuex";
+    import { EventBus } from "@/event.bus";
 
     export default {
         name: 'Main',
+        data() {
+            return {
+                s: "",
+            }
+        },
         computed: {
             ...mapGetters({
                 user: "user",
             })
         },
+        methods: {
+            updateS: function () {
+                EventBus.$emit('sChange', this.s)
+            }
+        }
     }
 </script>
 

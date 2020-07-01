@@ -12,7 +12,6 @@ import {faFacebookSquare} from "@fortawesome/free-brands-svg-icons";
 import * as firebase from "firebase";
 import store from './vuex.store';
 
-
 // Initialize Firebase
 const firebaseConfigs = {
   apiKey: "AIzaSyA-nR1xkqaKuXbD4PquQvz8Fx4WiXvjy8c",
@@ -28,15 +27,21 @@ firebase.initializeApp(firebaseConfigs);
 
 // Get the user info from database when logged in
 firebase.auth().onAuthStateChanged(user => {
-  const db = firebase.firestore();
-  const docRef = db.collection("users").doc(user.uid);
-  docRef.onSnapshot(function(doc) {
-    if (doc.exists) {
-      store.dispatch("fetchUser", { id: user.uid, ...doc.data() });
-    } else {
-      console.log("No such user!");
-    }
-  })
+  if(user) {
+    const db = firebase.firestore();
+    const docRef = db.collection("users").doc(user.uid);
+    docRef.onSnapshot(function(doc) {
+      if (doc.exists) {
+        store.dispatch("fetchUser", { id: user.uid, ...doc.data() })
+            .then(() => store.dispatch("appIsLoaded", true));
+      } else {
+        console.log("No such user!");
+      }
+    })
+  } else {
+    store.dispatch("appIsLoaded", true);
+  }
+
 });
 
 // Initialize FontAwesome icons

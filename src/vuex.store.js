@@ -1,8 +1,10 @@
 import Vue from "vue";
 import Vuex from "vuex";
+
 Vue.use(Vuex);
 export default new Vuex.Store({
     state: {
+        appLoaded: false,
         user: {
             loggedIn: false,
             data: {
@@ -17,7 +19,7 @@ export default new Vuex.Store({
         }
     },
     getters: {
-        user(state){
+        user(state) {
             return state.user
         }
     },
@@ -27,10 +29,13 @@ export default new Vuex.Store({
         },
         SET_USER(state, data) {
             state.user.data = data;
+        },
+        APP_LOADED(state, data){
+            state.appLoaded = data;
         }
     },
     actions: {
-        fetchUser({ commit }, user) {
+        fetchUser({commit}, user) {
             commit("SET_LOGGED_IN", user !== null);
             if (user) {
                 commit("SET_USER", {
@@ -40,9 +45,12 @@ export default new Vuex.Store({
                 commit("SET_USER", null);
             }
         },
-        logOut({ commit }) {
+        logOut({commit}) {
             commit("SET_LOGGED_IN", false);
             commit("SET_USER", null);
+        },
+        appIsLoaded({commit}, loaded) {
+            commit("APP_LOADED", loaded);
         }
     }
 });

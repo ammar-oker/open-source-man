@@ -12,17 +12,24 @@
                            @input="onSelectFile">
                 </div>
                 <ul class="ks-cboxtags">
-                    <li>
-                        <input type="checkbox" id="checkboxOne" value="Rainbow Dash 0" v-model="post.categories">
-                        <label for="checkboxOne">Topic 1</label>
+                    <li v-for="(value, index) in topics" :key="index">
+                        <input type="checkbox" :id="value.title" :value="value.title" v-model="post.categories">
+                        <label :for="value.title">{{value.title}}</label>
                     </li>
                     <li>
-                        <input type="checkbox" id="checkboxTwo" value="Rainbow Dash 1" v-model="post.categories">
-                        <label for="checkboxTwo">Topic 2</label>
+                        <input
+                                ref="topicTextBox"
+                                v-model="topicText"
+                                :class="open"
+                                placeholder="Enter topic title"
+                                type="text" id="topicText">
                     </li>
                     <li>
-                        <input type="checkbox" id="checkboxThree" value="Rainbow Dash 2" v-model="post.categories">
-                        <label for="checkboxThree">Topic 3</label>
+                        <input type="button" @click="handleNewTopic" id="newTopic" style="opacity: 0">
+                        <label for="newTopic" class="bg-primary text-light">
+                            <span v-if="this.open !== 'open'">Add a new topic</span>
+                            <span v-else>Create</span>
+                        </label>
                     </li>
                 </ul>
                 <MCE @mceUpdate="updateContent"/>
@@ -30,7 +37,7 @@
                 <p class="text-success py-4 text-center">{{message}}</p>
                 <button type="submit" :disabled="loading">
                     <span v-if="!loading">Post</span>
-                    <img v-else style="width: 35px" src="../assets/images/loader.svg" alt="loading icon" />
+                    <img v-else style="width: 35px" src="../assets/images/loader.svg" alt="loading icon"/>
                 </button>
             </form>
 
@@ -43,23 +50,30 @@
     import firebase from 'firebase';
     import store from '../vuex.store';
 
+    function getDefaultData() {
+        return {
+            imageData: null,
+            post: {
+                content: '',
+                title: '',
+                categories: [],
+            },
+            error: '',
+            loading: false,
+            message: '',
+            topics: [],
+            open: '',
+            topicText: '',
+        }
+    }
+
     export default {
         name: 'AddPost',
         components: {
             MCE,
         },
         data() {
-            return {
-                imageData: null,
-                post: {
-                    content: '',
-                    title: '',
-                    categories: [],
-                },
-                error: '',
-                loading: false,
-                message: '',
-            }
+            return getDefaultData()
         },
         methods: {
             chooseImage() {
@@ -118,20 +132,50 @@
                                 author: {
                                     id: store.state.user.data.id,
                                     name: store.state.user.data.name
-                                }
+                                },
+                                createdAt: Date.now()
                             }).then(() => {
+                                window.location.reload();
                                 _this.loading = false;
                                 _this.message = 'Post uploaded successfully';
                             })
                         });
                     });
                 }
+
+            },
+            handleNewTopic() {
+                if (this.open === 'open') {
+                    const db = firebase.firestore();
+                    if (this.topicText.length) {
+                        db.collection('topics').doc().set({
+                            title: this.topicText
+                        }).then(() => {
+                            this.open = '';
+                            this.topicText = '';
+                        })
+                    }
+                } else {
+                    this.open = 'open';
+                }
+            },
+            resetData: function () {
+                this.$data = getDefaultData();
             }
         },
         created() {
             if (!this.$store.state.user.loggedIn) {
                 this.$router.push('/');
             }
+            const db = firebase.firestore();
+            db.collection('topics').onSnapshot(snapshot => {
+                let changes = snapshot.docChanges();
+                changes.forEach(change => {
+                    if (change.type === "added") {
+                        this.topics.push(change.doc.data());
+                    }
+                })
+            });
         },
     }
 </script>

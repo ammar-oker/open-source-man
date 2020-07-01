@@ -2,7 +2,7 @@
     <div class="row justify-content-center post">
         <div class="col-lg-10 col-12">
             <div class="profile-wrapper">
-                <div class="profile-block border p-3">
+                <div class="profile-block border rounded p-3">
                     <div class="img-block mx-auto position-relative">
                         <img :src="profile.photo" class="img-fluid" alt="">
                         <div class="image-input">
@@ -63,7 +63,6 @@
                                       id="textarea" rows="4"
                                       @input="handleInput" v-model="profile.bio"></textarea>
                         </div>
-
                         <div v-if="edit" class="ml-auto" style="width: fit-content">
                             <button type="button" @click="edit = false" class="ml-auto mx-3 btn-light">Cancel</button>
                             <button type="button" :disabled="loading" class="ml-auto mx-3" @click="updateProfile">
@@ -75,7 +74,6 @@
                             <button type="button" @click="edit = true" class="ml-auto mx-3">Edit</button>
                         </div>
                     </form>
-
                 </div>
             </div>
         </div>
