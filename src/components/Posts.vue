@@ -9,55 +9,20 @@
         <div class="row justify-content-around">
             <div class="col-lg-10 col-12">
                 <div class="content">
-                    <div class="widget row my-3">
-                        <div class="col-md-4 col-12">
-                            <a href="#">
-                                <img src="../assets/images/image-01.png" class="img-fluid" alt="">
-                            </a>
-                        </div>
-                        <div class="col-md-8 col-12 py-2">
-                            <a href="#">
-                                <h3 class="p-2">Post Title Goes Here</h3>
-                            </a>
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Cumque officia assumenda
-                                omnis.
-                                Error, nemo. Doloremque ad commodi praesentium accusantium libero earum! Eaque
-                                itaque
-                                laudantium temporibus dolorum asperiores sed corporis molestias.</p>
-                        </div>
+                    <div v-if="loading" class="text-center py-5 w-100">
+                        <img class="img-fluid mx-auto" src="../assets/images/loader-blue.svg" alt="loading icon" />
                     </div>
-                    <div class="widget row my-3">
+                    <div v-else v-for="(value, index) in posts" :key="index" class="widget row my-3">
                         <div class="col-md-4 col-12">
                             <a href="#">
-                                <img src="../assets/images/image-01.png" class="img-fluid" alt="">
+                                <img :src="value.featuredImage" class="img-fluid" alt="">
                             </a>
                         </div>
                         <div class="col-md-8 col-12 py-2">
                             <a href="#">
-                                <h3 class="p-2">Post Title Goes Here</h3>
+                                <h3 class="p-2">{{value.title}}</h3>
                             </a>
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Cumque officia assumenda
-                                omnis.
-                                Error, nemo. Doloremque ad commodi praesentium accusantium libero earum! Eaque
-                                itaque
-                                laudantium temporibus dolorum asperiores sed corporis molestias.</p>
-                        </div>
-                    </div>
-                    <div class="widget row my-3">
-                        <div class="col-md-4 col-12">
-                            <a href="#">
-                                <img src="../assets/images/image-01.png" class="img-fluid" alt="">
-                            </a>
-                        </div>
-                        <div class="col-md-8 col-12 py-2">
-                            <a href="#">
-                                <h3 class="p-2">Post Title Goes Here</h3>
-                            </a>
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Cumque officia assumenda
-                                omnis.
-                                Error, nemo. Doloremque ad commodi praesentium accusantium libero earum! Eaque
-                                itaque
-                                laudantium temporibus dolorum asperiores sed corporis molestias.</p>
+                            <p>{{(value.content)}}</p>
                         </div>
                     </div>
                 </div>
@@ -67,11 +32,38 @@
 </template>
 <script>
     import Categories from "@/components/Categories";
+    import firebase from 'firebase';
+
+    const stripHtml = (html) => {
+        let tmp = document.createElement("DIV");
+        tmp.innerHTML = html;
+        return tmp.textContent || tmp.innerText || "";
+    };
 
     export default {
         name: 'Posts',
+        data() {
+            return {
+                posts: [],
+                loading: true
+            }
+        },
         components: {
             Categories,
+        },
+        created() {
+            const db = firebase.firestore();
+            db.collection("posts").onSnapshot(snapshot => {
+                let changes = snapshot.docChanges();
+                changes.forEach(change => {
+                    if (change.type === "added") {
+                        let _content = stripHtml(change.doc.data().content);
+                        if (_content.length > 200) _content = _content.slice(0, 150) + '...';
+                        this.posts.push({...change.doc.data(), content: _content})
+                    }
+                });
+                this.loading = false;
+            });
         }
     }
 </script>
