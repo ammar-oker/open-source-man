@@ -53,13 +53,11 @@ button {
     text-align: center;
     color: #ffffff;
     padding: 0.4em 0.8em;
-    box-shadow: 2px 2px 5px 1px #DDDDDD;
     border-radius: 15px;
     font-family: 'Source Sans Pro', sans-serif;
     font-weight: lighter;
     border: none;
     font-size: 1.2em;
-    margin: 1.2em 0;
 }
 
 .text-primary {

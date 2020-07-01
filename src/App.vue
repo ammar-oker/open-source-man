@@ -39,9 +39,7 @@ export default {
       provider.addScope('profile');
       provider.addScope('email');
       firebase.auth().signInWithRedirect(provider);
-      firebase.auth().getRedirectResult().then(function(result) {
-        console.log(result);
-        // The signed-in user info.
+      firebase.auth().getRedirectResult().then(function(result) {// The signed-in user info.
         const user = result.user;
         const docRef = db.collection("users").doc(user.uid);
 

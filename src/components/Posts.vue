@@ -4,17 +4,9 @@
             <div class="col-lg-10 col-12">
 <!--                <Categories/>-->
                 <ul class="ks-cboxtags">
-                    <li>
-                        <input type="checkbox" id="checkboxOne" value="Rainbow Dash 0" @change="getPosts" v-model="topics">
-                        <label for="checkboxOne">Topic 1</label>
-                    </li>
-                    <li>
-                        <input type="checkbox" id="checkboxTwo" value="Rainbow Dash 1"  @change="getPosts" v-model="topics">
-                        <label for="checkboxTwo">Topic 2</label>
-                    </li>
-                    <li>
-                        <input type="checkbox" id="checkboxThree" value="Rainbow Dash 2"  @change="getPosts" v-model="topics">
-                        <label for="checkboxThree">Topic 3</label>
+                    <li v-for="(value, index) in topics"  :key="index">
+                        <input type="checkbox" :id="value.title" :value="value.title" @change="getPosts" v-model="selectedTopics">
+                        <label :for="value.title">{{value.title}}</label>
                     </li>
                 </ul>
             </div>
@@ -60,6 +52,7 @@
             return {
                 posts: [],
                 topics: [],
+                selectedTopics: [],
                 loading: true
             }
         },
@@ -71,7 +64,7 @@
                 this.posts = [];
                 this.loading = true;
                 const db = firebase.firestore();
-                if(this.topics.length === 0) {
+                if(this.selectedTopics.length === 0) {
                     db.collection("posts").onSnapshot(snapshot => {
                         let changes = snapshot.docChanges();
                         changes.forEach(change => {
@@ -84,7 +77,7 @@
                         this.loading = false;
                     });
                 } else {
-                    db.collection("posts").where('categories', 'array-contains-any', this.topics)
+                    db.collection("posts").where('categories', 'array-contains-any', this.selectedTopics)
                         .onSnapshot(snapshot => {
                         let changes = snapshot.docChanges();
                         changes.forEach(change => {
@@ -100,6 +93,15 @@
             }
         },
         created() {
+            const db = firebase.firestore();
+            db.collection('topics').onSnapshot(snapshot => {
+                let changes = snapshot.docChanges();
+                changes.forEach(change => {
+                    if (change.type === "added") {
+                        this.topics.push(change.doc.data());
+                    }
+                })
+            })
             this.getPosts();
         }
     }
