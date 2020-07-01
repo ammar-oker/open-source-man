@@ -83,7 +83,6 @@
 </template>
 
 <script>
-    // import store from '../vuex.store';
     import firebase from 'firebase';
 
     String.prototype.lines = function () {

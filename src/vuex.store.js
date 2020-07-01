@@ -6,6 +6,7 @@ export default new Vuex.Store({
         user: {
             loggedIn: false,
             data: {
+                id: '',
                 name: "",
                 email: '',
                 jobTitle: '',
