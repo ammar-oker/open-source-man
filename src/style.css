@@ -35,7 +35,7 @@ a:hover {
     text-decoration: none;
 }
 
-input[type=text], input[type=email], input[type=password] ,textarea {
+input[type=text], input[type=email], input[type=password], textarea {
     border: none;
     padding: 0.5em 1em;
     border-radius: 25px;
@@ -93,7 +93,7 @@ button {
 }
 
 main {
-    margin-top: -180px;
+    /*margin-top: -180px;*/
 }
 
 .creative-navbar {
@@ -133,7 +133,8 @@ main {
     .creative-navbar {
         position: static;
         border-radius: 50px;
-        margin: 2em 0;
+        /*margin: 2em 0;*/
+        margin-top: -150px;
         box-shadow: 0 0 1px 1px #eee;
     }
 
@@ -190,6 +191,8 @@ main {
 }
 
 .widget {
+    width: 100%;
+    margin: 0 auto;
     background-color: #fff;
     -webkit-box-shadow: 0 0 10px 1px #eee;
     -moz-box-shadow: 0 0 10px 1px #eee;
@@ -198,12 +201,22 @@ main {
 }
 
 .widget img {
-    border-radius: 35px;
+    border-top-left-radius: 35px;
+    border-top-right-radius: 35px;
+}
+
+@media only screen and (min-width: 768px) {
+    .widget img {
+        border-top-left-radius: 35px;
+        border-bottom-left-radius: 35px;
+        border-top-right-radius: 0;
+    }
 }
 
 .post {
     color: #868F9B;
 }
+
 .post h1, .post h2, .post h3, .post h5, .post h6 {
     color: #333333;
 }
@@ -223,6 +236,7 @@ main {
     background-position: center center;
     margin: 1em 0;
 }
+
 .placeholder {
     background: #f0f0f0;
     width: 100%;
@@ -233,9 +247,11 @@ main {
     color: #333;
     font-size: 18px;
 }
+
 .placeholder:hover {
     background: #e0e0e0;
 }
+
 .file-input {
     display: none;
 }
@@ -250,10 +266,12 @@ ul.ks-cboxtags {
     list-style: none;
     padding: 20px;
 }
-ul.ks-cboxtags li{
+
+ul.ks-cboxtags li {
     display: inline;
 }
-ul.ks-cboxtags li label{
+
+ul.ks-cboxtags li label {
     display: inline-block;
     background-color: rgba(255, 255, 255, .9);
     border: 2px solid rgba(139, 139, 139, .3);
@@ -305,10 +323,12 @@ ul.ks-cboxtags li input[type="checkbox"]:checked + label {
 ul.ks-cboxtags li input[type="checkbox"] {
     position: absolute;
 }
+
 ul.ks-cboxtags li input[type="checkbox"] {
     position: absolute;
     opacity: 0;
 }
+
 ul.ks-cboxtags li input[type="checkbox"]:focus + label {
     border: 2px solid #e9a1ff;
 }
@@ -355,6 +375,7 @@ ul.ks-cboxtags li input[type="checkbox"]:focus + label {
     transition: all 0.5s;
     cursor: pointer;
 }
+
 .profile-block .img-block .image-input span {
     margin: 0;
     width: 150px;
@@ -367,7 +388,7 @@ ul.ks-cboxtags li input[type="checkbox"]:focus + label {
     opacity: 0.6;
 }
 
-#modal-scoped___BV_modal_header_, #modal-scoped___BV_modal_footer_{
+#modal-scoped___BV_modal_header_, #modal-scoped___BV_modal_footer_ {
     display: none;
 }
 

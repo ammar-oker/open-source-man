@@ -2,7 +2,21 @@
     <div>
         <div class="row justify-content-center">
             <div class="col-lg-10 col-12">
-                <Categories/>
+<!--                <Categories/>-->
+                <ul class="ks-cboxtags">
+                    <li>
+                        <input type="checkbox" id="checkboxOne" value="Rainbow Dash 0" @change="getPosts" v-model="topics">
+                        <label for="checkboxOne">Topic 1</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="checkboxTwo" value="Rainbow Dash 1"  @change="getPosts" v-model="topics">
+                        <label for="checkboxTwo">Topic 2</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="checkboxThree" value="Rainbow Dash 2"  @change="getPosts" v-model="topics">
+                        <label for="checkboxThree">Topic 3</label>
+                    </li>
+                </ul>
             </div>
         </div>
 
@@ -13,7 +27,7 @@
                         <img class="img-fluid mx-auto" src="../assets/images/loader-blue.svg" alt="loading icon" />
                     </div>
                     <div v-else v-for="(value, index) in posts" :key="index" class="widget row my-3">
-                        <div class="col-md-4 col-12">
+                        <div class="col-md-4 col-12 px-0 ">
                             <a href="#">
                                 <img :src="value.featuredImage" class="img-fluid" alt="">
                             </a>
@@ -31,7 +45,7 @@
     </div>
 </template>
 <script>
-    import Categories from "@/components/Categories";
+    // import Categories from "@/components/Categories";
     import firebase from 'firebase';
 
     const stripHtml = (html) => {
@@ -45,25 +59,48 @@
         data() {
             return {
                 posts: [],
+                topics: [],
                 loading: true
             }
         },
         components: {
-            Categories,
+            // Categories,
+        },
+        methods: {
+            getPosts: function () {
+                this.posts = [];
+                this.loading = true;
+                const db = firebase.firestore();
+                if(this.topics.length === 0) {
+                    db.collection("posts").onSnapshot(snapshot => {
+                        let changes = snapshot.docChanges();
+                        changes.forEach(change => {
+                            if (change.type === "added") {
+                                let _content = stripHtml(change.doc.data().content);
+                                if (_content.length > 200) _content = _content.slice(0, 150) + '...';
+                                this.posts.push({...change.doc.data(), content: _content})
+                            }
+                        });
+                        this.loading = false;
+                    });
+                } else {
+                    db.collection("posts").where('categories', 'array-contains-any', this.topics)
+                        .onSnapshot(snapshot => {
+                        let changes = snapshot.docChanges();
+                        changes.forEach(change => {
+                            if (change.type === "added") {
+                                let _content = stripHtml(change.doc.data().content);
+                                if (_content.length > 200) _content = _content.slice(0, 150) + '...';
+                                this.posts.push({...change.doc.data(), content: _content})
+                            }
+                        });
+                        this.loading = false;
+                    });
+                }
+            }
         },
         created() {
-            const db = firebase.firestore();
-            db.collection("posts").onSnapshot(snapshot => {
-                let changes = snapshot.docChanges();
-                changes.forEach(change => {
-                    if (change.type === "added") {
-                        let _content = stripHtml(change.doc.data().content);
-                        if (_content.length > 200) _content = _content.slice(0, 150) + '...';
-                        this.posts.push({...change.doc.data(), content: _content})
-                    }
-                });
-                this.loading = false;
-            });
+            this.getPosts();
         }
     }
 </script>

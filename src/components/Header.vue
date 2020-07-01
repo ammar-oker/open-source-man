@@ -2,12 +2,14 @@
     <header class="container home-header">
         <div class="row justify-content-around">
             <div class="col-lg-8 col-12">
-                <h1 class="brand px-2 py-5 d-inline-block">Open Source Man</h1>
-                <span class="float-right text-light d-none d-md-inline-block p-5">
-                    <font-awesome-icon class="mx-2" :icon="['fas', 'user']" />
-                    <router-link v-if="user.loggedIn" to="me" class="text-light">{{user.data.name}}</router-link>
+                <div class="row justify-content-between py-5">
+                    <h1 class="brand mx-3">O.S Man</h1>
+                    <span class=" text-light mx-3 d-flex bg-light text-primary px-2 rounded">
+                        <font-awesome-icon class="mx-2 my-auto" :icon="['fas', 'user']"/>
+                        <router-link v-if="user.loggedIn" to="me" class="my-auto">{{user.data.name}}</router-link>
                     <a href="#" v-else @click.prevent="$bvModal.show('modal-scoped')" class="text-light">Sign in</a>
                 </span>
+                </div>
             </div>
         </div>
         <svg class="svg">
