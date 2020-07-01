@@ -42,12 +42,22 @@
         data() {
             return {
                 swiperOption: {
-                    slidesPerView: 7,
+                    slidesPerView: 3,
                     spaceBetween: 30,
                     freeMode: true,
-                    pagination: {
-                        el: '.swiper-pagination',
-                        clickable: true
+                    breakpoints: {
+                        360: {
+                            slidesPerView: 4
+                        },
+                        480: {
+                            slidesPerView: 5
+                        },
+                        768: {
+                            slidesPerView: 6
+                        },
+                        992: {
+                            slidesPerView: 8
+                        }
                     }
                 }
             }

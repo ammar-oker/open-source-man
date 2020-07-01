@@ -1,9 +1,9 @@
 <template>
     <div class="row justify-content-center">
         <div class="col-lg-10 col-12">
-            <form class="post-form">
+            <form class="post-form" @submit.prevent="uploadPost">
                 <h2 class="text-primary my-4">New Post</h2>
-                <input id="title" class="d-block w-100 title" type="text" placeholder="Title">
+                <input id="title" class="d-block w-100 title" type="text" placeholder="Title" required>
                 <div class="image-input" :style="{ 'background-image': `url(${imageData})` }" @click="chooseImage">
                     <span v-if="!imageData" class="placeholder">
                       Choose an Image
@@ -24,16 +24,18 @@
                         <label for="checkboxThree">Topic 3</label>
                     </li>
                 </ul>
-                <MCE/>
+                <MCE @mceUpdate="updateContent" />
 
                 <button type="submit">Post</button>
             </form>
+
         </div>
     </div>
 </template>
 
 <script>
     import MCE from "@/components/MCE";
+    import firebase from 'firebase';
 
     export default {
         name: 'AddPost',
@@ -43,6 +45,9 @@
         data() {
             return {
                 imageData: null,
+                content: '',
+                title: '',
+                categories: []
             }
         },
         methods: {
@@ -61,8 +66,32 @@
                     reader.readAsDataURL(files[0]);
                     this.$emit('input', files[0]);
                 }
+            },
+            updateContent(content) {
+                this.content = content;
+            },
+            uploadPost() {
+                const input = this.$refs.fileInput;
+                const files = input.files;
+
+                if(files && files[0]){
+                    const attachmentsRef = firebase.storage().ref().child(`/attachments/${files[0].name}`);
+                    attachmentsRef.put(files[0]).then(function(snapshot) {
+                        snapshot.ref.getDownloadURL().then(url => {
+                             console.log(url)
+
+                        });
+                    });
+                } else {
+                    // TODO show error message please select an featured image
+                }
             }
-        }
+        },
+        created() {
+            if(!this.$store.state.user.loggedIn) {
+                this.$router.push('/');
+            }
+        },
     }
 </script>
 

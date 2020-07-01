@@ -2,6 +2,7 @@
     <div>
         <editor
                 v-model="content"
+                @input="mceUpdate"
                 apiKey="bdpyk8ns2jooxxj26b87kwmspgfcp9w0s2alkci1oh48c6nq"
                 initialValue=""
                 :init="{
@@ -41,6 +42,11 @@
         },
         components: {
             editor: Editor
+        },
+        methods: {
+            mceUpdate() {
+                this.$emit('mceUpdate', this.content)
+            }
         }
     }
 </script>

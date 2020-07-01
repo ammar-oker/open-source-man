@@ -63,4 +63,5 @@ new Vue({
   render: h => h(App),
   router,
   store, // Use Vuex store object from ./vuex.store.js
+  firebase,
 }).$mount('#app');

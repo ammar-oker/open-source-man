@@ -83,7 +83,7 @@
 </template>
 
 <script>
-    import store from '../vuex.store';
+    // import store from '../vuex.store';
     import firebase from 'firebase';
 
     String.prototype.lines = function () {
@@ -99,12 +99,12 @@
             return {
                 loading: false,
                 edit: false,
-                profile: store.state.user.data
+                profile: this.$store.state.user.data
             }
         },
         watch: {
             userInfo() {
-                this.profile = store.state.user.data
+                this.profile = this.$store.state.user.data
             }
         },
         methods: {
@@ -133,10 +133,14 @@
         },
         computed: {
             userInfo () {
-                return store.state.user.data
+                return this.$store.state.user.data
             }
         },
-
+        created() {
+            if(!this.$store.state.user.loggedIn) {
+                this.$router.push('/');
+            }
+        },
         mounted() {
             this.setRowsNumber(document.getElementById('textarea'));
         }
