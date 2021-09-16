@@ -1,4 +1,5 @@
 # open-source-man
+Simple blog example built with Vue.js and Firebase.
 
 ## Project setup
 ```
